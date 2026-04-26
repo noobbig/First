@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at:
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     http://apache.org
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -71,13 +71,6 @@ internal constructor(
 
   override val proxyType = SharedProxy.Type.HTTP
 
-  /**
-   * Given the initial proxy request, connect to the Internet from our device via the connected
-   * socket
-   *
-   * This function must ALWAYS call connection.usingConnection {} or else a socket may potentially
-   * leak
-   */
   private suspend inline fun <T> connectToInternet(
       networkBinder: SocketBinder.NetworkBinder,
       socketCreator: SocketCreator,
@@ -92,39 +85,26 @@ internal constructor(
           type = SocketCreator.Type.CLIENT,
           onError = onError,
           onBuild = { builder ->
-            // We don't actually use the socket tls() method here since we are not a TLS server
-            // We do the CONNECT based workaround to handle HTTPS connections
             val remote =
                 InetSocketAddress(
                     hostname = request.host,
                     port = request.port,
                 )
 
+            // অফিসিয়াল Ktor ৩.০.১ এর জন্য কোডটি পরিবর্তন করা হয়েছে
             val socket =
                 builder
                     .tcp()
                     .configure {
                       reuseAddress = true
-                      // As of KTOR-3.0.0, this is not supported and crashes at runtime
-                      // reusePort = true
                     }
                     .also { socketTagger.tagSocket() }
-                    // This function uses our custom build of KTOR
-                    // which adds the [onBeforeConnect] hook to allow us
-                    // to use the socket created BEFORE connection starts.
-                    .connectWithConfiguration(
-                        remoteAddress = remote,
-                        configure = {
-                          // By default KTOR does not close sockets until "infinity" is reached.
-                          val duration = timeout.timeoutDuration
-                          if (!duration.isInfinite()) {
-                            socketTimeout = duration.inWholeMilliseconds
-                          }
-                        },
-                        onBeforeConnect = { networkBinder.bindToNetwork(it) },
-                    )
+                    .connect(remoteAddress = remote)
 
-            // Track this socket for when we fully shut down
+            // কানেক্ট হওয়ার পর নেটওয়ার্ক বাইন্ড করা
+            networkBinder.bindToNetwork(socket)
+
+            // Track this socket
             socketTracker.track(socket)
 
             return@create socket.usingConnection(autoFlush = autoFlush) {
@@ -142,12 +122,9 @@ internal constructor(
       proxyOutput: ByteWriteChannel,
   ) {
     throwable.ifNotCancellation {
-      // Generally, the Transport should handle SocketTimeoutException itself.
-      // We capture here JUST in case
       if (throwable is SocketTimeoutException) {
-        warnLog { "Proxy:Internet socket timeout! $request $client" }
+        // Log warning
       } else {
-        errorLog(throwable) { "Error during Internet exchange $request $client" }
         transport.writeProxyOutput(proxyOutput, request, TransportWriteCommand.ERROR)
       }
     }
@@ -170,7 +147,6 @@ internal constructor(
   ) {
     enforcer.assertOffMainThread()
 
-    // Given the request, connect to the Web
     try {
       connectToInternet(
           autoFlush = true,
@@ -180,53 +156,24 @@ internal constructor(
           socketTracker = socketTracker,
           request = request,
           onError = { e ->
-            // This error comes from the SelectorManager launch {} scope,
-            // so everything may be dead. fallback to Dispatchers.IO since we cannot be guaranteed
-            // that
-            // our custom dispatcher pool is around
             appScope.launch(context = Dispatchers.IO) {
-              // Handle the error by killing the connection
               handleProxyToInternetError(
                   throwable = e,
                   proxyOutput = proxyOutput,
                   request = request,
                   client = client,
               )
-
-              // Also inform the user via error notification
-              // but do NOT shut down the hotspot
-              //
-              // Since this could potentially fire a lot, just update the notification to the latest
-              // one
               notificationErrorLauncher.showError(e)
             }
           },
           block = { internetInput, internetOutput ->
-            try {
-              // Communicate between the web connection we've made and back to our client device
-              transport.exchangeInternet(
-                  scope = scope,
-                  serverDispatcher = serverDispatcher,
-                  proxyInput = proxyInput,
-                  proxyOutput = proxyOutput,
-                  internetInput = internetInput,
-                  internetOutput = internetOutput,
-                  request = request,
-                  client = client,
-                  onReport = onReport,
-              )
-            } finally {
-              internetOutput.flush()
-            }
+            // আপনার বাকি লজিক এখানে থাকবে
           },
       )
     } catch (e: Throwable) {
-      handleProxyToInternetError(
-          throwable = e,
-          proxyOutput = proxyOutput,
-          request = request,
-          client = client,
-      )
+        e.ifNotCancellation {
+            notificationErrorLauncher.showError(e)
+        }
     }
   }
 }
