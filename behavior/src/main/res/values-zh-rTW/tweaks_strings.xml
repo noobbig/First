@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright 2025 pyamsoft
+  ~ Copyright 2025 林博仁(Buo-ren Lin)
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at:
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<resources>
+  <string name="tweaks_title">行為調整設定</string>
+  <string
+    name="tweaks_description"
+  >行為調整設定可在多個層面變更 %1$s 的運作方式。\n\n所有這些設定選項都是完全可選，且不會已任何方式對網路或網路熱點性能帶來任何負面影響。</string>
+
+  <string
+    name="ignore_vpn_description"
+  >在網路熱點啟動時，%1$s 有時會在 VPN 連線存在情境中無法正常運作，故會在 VPN 連線未中止狀態下拒絕啟動網路熱點。\n\n如果您「已知」您的 VPN 應用可以與 %1$s 正常運作可以將這個選項啟用以避免出現阻擋對話框。</string>
+
+  <string
+    name="shutdown_no_client_title"
+  >在沒有客戶端連線的情境下中止網路熱點服務</string>
+  <string
+    name="shutdown_no_client_description"
+  >如果 %1$s 網路熱點在沒有服務任何客戶端裝置情境下運行超過十分鐘就中止服務。\n\n在未使用情境下自動中止網路熱點服務可以節省電池電量消耗。</string>
+
+  <string name="keep_screen_on_title">螢幕保持開啟</string>
+  <string
+    name="keep_screen_on_description"
+  >在熱點運行時將螢幕保持開啟。當熱點被停止後螢幕會再被允許被關閉。這個行為調整設定不是在每個裝置上都被支援。</string>
+
+  <string name="ignore_location_description">
+        %1$s 可能會需要定位服務被啟用才得以使用 Wi-Fi Direct。但不是每個裝置都需要這樣。\n\n如果您「已知」您的裝置使用 Wi-Fi Direct 時不需要定位服務，將此選項開啟以避免出現定位服務阻擋對話框。\n\n要使用 Wi-Fi Direct 仍需要定位/鄰近裝置相關權限。</string>
+</resources>

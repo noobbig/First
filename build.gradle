@@ -1,0 +1,123 @@
+/*
+ * Copyright 2025 pyamsoft
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at:
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import com.deezer.caupain.plugin.DependenciesUpdateTask
+import com.deezer.caupain.policies.StabilityLevelPolicy
+
+plugins {
+  // Android AGP
+  // https://developer.android.com/studio/build#top-level
+  alias(libs.plugins.android) apply false
+
+  // Fix Android build cache
+  // https://github.com/gradle/android-cache-fix-gradle-plugin
+  alias(libs.plugins.android.cacheFix) apply false
+
+  // Jetpack Compose Compiler
+  // https://android-developers.googleblog.com/2024/04/jetpack-compose-compiler-moving-to-kotlin-repository.html
+  alias(libs.plugins.compose.compiler) apply false
+
+  // Spotless
+  // https://github.com/diffplug/spotless
+  alias(libs.plugins.spotless) apply false
+
+  // KSP
+  // https://github.com/google/ksp
+  alias(libs.plugins.ksp) apply false
+
+  // Gradle Doctor
+  // https://runningcode.github.io/gradle-doctor/
+  alias(libs.plugins.doctor) apply true
+
+  // Caupain
+  // https://github.com/deezer/caupain/blob/main/gradle-plugin/README.md
+  alias(libs.plugins.caupain) apply true
+}
+
+allprojects {
+  // Need to do this instead of applying Spotless in the plugin block
+  // or we get an error about duplicate plugins
+  //
+  // and we can't just apply this toplevel or it won't run on all the subprojects
+  apply(plugin: libs.plugins.spotless.get().pluginId)
+
+  repositories {
+    mavenLocal()
+    gradlePluginPortal()
+    google()
+    mavenCentral()
+
+    // Jitpack
+    maven {
+      setUrl("https://jitpack.io")
+      content {
+        includeGroup("com.github.pyamsoft.cachify")
+        includeGroup("com.github.pyamsoft.pydroid")
+        includeGroup("com.github.pyamsoft")
+      }
+    }
+  }
+
+  // Spotless plugin
+  spotless {
+    java {
+      target("src/**/*.java")
+
+      removeUnusedImports()
+      trimTrailingWhitespace()
+      endWithNewline()
+      leadingTabsToSpaces(2)
+    }
+    kotlin {
+      target("src/**/*.kt")
+      ktfmt()
+
+      trimTrailingWhitespace()
+      endWithNewline()
+      leadingTabsToSpaces(2)
+    }
+    kotlinGradle {
+      target("*.gradle.kts")
+      ktfmt()
+
+      trimTrailingWhitespace()
+      endWithNewline()
+      leadingTabsToSpaces(2)
+    }
+    groovyGradle {
+      target("*.gradle")
+      greclipse()
+
+      trimTrailingWhitespace()
+      endWithNewline()
+      leadingTabsToSpaces(2)
+    }
+  }
+
+  // Caupain Version Strategy
+  tasks.withType(DependenciesUpdateTask).configureEach {
+    selectIf(StabilityLevelPolicy.INSTANCE)
+  }
+}
+
+subprojects {
+  // Java compile show
+  tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs.add("-Xlint:unchecked")
+    options.compilerArgs.add("-Xlint:deprecation")
+    options.deprecation = true
+  }
+}

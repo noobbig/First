@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  ~ Copyright 2025 pyamsoft
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at:
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+<resources>
+  <string name="editmode_system_defined">SET BY SYSTEM: CAN\'T CHANGE</string>
+
+  <string name="editmode_type_ssid">SSID</string>
+
+  <string name="editmode_label_map">%1$s is %2$s</string>
+
+  <string name="editmode_label_valid">Valid</string>
+  <string name="editmode_label_invalid">Invalid</string>
+  <string name="editmode_label_visible">Visible</string>
+  <string name="editmode_label_hidden">Hidden</string>
+  <string name="editmode_hotspot_password">HOTSPOT PASSWORD</string>
+  <string name="editmode_hotspot_name">HOTSPOT NAME</string>
+
+  <!-- TODO(Peter): Need zh-rTW translation -->
+  <string name="editmode_hotspot_proxy_mode_title">Proxy Mode</string>
+
+  <string
+    name="editmode_hotspot_proxy_newengine_description"
+  >The New Engine uses a single port for all connection types, so different port numbers for HTTP and SOCKS are no longer required.</string>
+
+  <string name="editmode_hotspot_proxy_http_title">HTTP/HTTPS Proxy</string>
+  <string name="editmode_hotspot_proxy_http_description">
+    This proxy mode is simple and fast. It is compatible with most webpages
+    but not all online services like games, chat, or video streaming.
+    Most users will want to use this option (recommended)
+  </string>
+
+  <string
+    name="editmode_hotspot_proxy_socks_title"
+  >SOCKS4A/SOCKS5H Proxy</string>
+  <string name="editmode_hotspot_proxy_socks_description">
+    This proxy mode is slower and is only meant for highly technical
+    users and specific use-cases.
+    This proxy mode supports SOCKS4A, SOCKS5 (CONNECT and UDP-ASSOCIATE).
+    Most users will not need this option.
+  </string>
+</resources>
