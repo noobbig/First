@@ -40,6 +40,8 @@ jobs:
       - name: Build debug APK
         run: |
           ./gradlew app:assembleDebug -x lint \
+            --no-configuration-cache \
+            --refresh-dependencies \
             --build-cache \
             --parallel \
             --max-workers=4
@@ -49,6 +51,8 @@ jobs:
       - name: Build release APK (fdroid flavor)
         run: |
           ./gradlew app:assembleFdroidRelease -x lint \
+            --no-configuration-cache \
+            --refresh-dependencies \
             --build-cache \
             --parallel \
             --max-workers=4
