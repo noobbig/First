@@ -95,7 +95,9 @@ kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-cor
 
 # TODO(Peter): NextGen version will drop ktor and directly use Netty engine.
 #ktor-network = { group = "io.ktor", name = "ktor-network", version.ref = "ktor" }
+ktor-network = { group = "com.github.pyamsoft.ktor", name = "ktor-network", version.ref = "ktor" }
 #ktor-server-netty = { group = "io.ktor", name = "ktor-server-netty-jvm", version.ref = "ktor" }
+ktor-server-netty = { group = "com.github.pyamsoft.ktor", name = "ktor-server-netty-jvm", version.ref = "ktor" }
 
 netty-codec-http = { group = "io.netty", name = "netty-codec-http", version.ref = "netty" }
 netty-codec-socks = { group = "io.netty", name = "netty-codec-socks", version.ref = "netty" }
