@@ -67,7 +67,6 @@ allprojects {
         includeGroup("com.github.pyamsoft.cachify")
         includeGroup("com.github.pyamsoft.pydroid")
         includeGroup("com.github.pyamsoft")
-includeGroup("com.github.pyamsoft.ktor-network")
       }
     }
   }
