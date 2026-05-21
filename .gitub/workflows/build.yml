@@ -1,4 +1,4 @@
-name: Android Build (Java 21)
+nme: Android Build (Java 21)
 
 on:
   push:
